@@ -2,6 +2,16 @@
 # Matthew Pearson
 # June 2009
 
+# Macros:
+#% macro, P, Device Prefix
+#% macro, R, Device Suffix
+#% macro, PORT, Asyn Port name
+#% macro, TIMEOUT, Timeout
+#% macro, ADDR, Asyn Port address
+
+# This associates the template with an edm screen
+# % gui, $(PORT), edmtab, andor.edl, P=$(P),R=$(R)
+
 include "ADBase.template"
 include "NDFile.template"
 
@@ -156,6 +166,7 @@ record(bo, "$(P)$(R)AndorCooler")
     field(ONAM, "On")
 }
 
+#% archiver 10 Monitor
 record(bi, "$(P)$(R)AndorCooler_RBV")
 {
     field(DTYP, "asynInt32")
@@ -204,6 +215,7 @@ record(waveform, "$(P)$(R)AndorMessage_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# % autosave 2 VAL
 record(mbbo, "$(P)$(R)AndorShutterMode")
 {
     field(PINI, "1")
@@ -213,8 +225,11 @@ record(mbbo, "$(P)$(R)AndorShutterMode")
     field(ZRVL, "0")
     field(ONST, "Open")
     field(ONVL, "1")
+    field(TWST, "Close")
+    field(TWVL, "2")
 }
 
+# % autosave 2 VAL
 record(bo, "$(P)$(R)AndorShutterExTTL")
 {
     field(PINI, "1")
@@ -227,6 +242,7 @@ record(bo, "$(P)$(R)AndorShutterExTTL")
 
 
 # Filename of the PAL file
+# % autosave 2 VAL
 record(waveform, "$(P)$(R)PALFilePath")
 {
     field(PINI, "1")
@@ -246,6 +262,7 @@ record(waveform, "$(P)$(R)PALFilePath_RBV")
 }
 
 # The ADC speed enum values are constructed at run-time based on camera capabilities
+# % autosave 2 VAL
 record(mbbo, "$(P)$(R)AndorADCSpeed")
 {
     field(PINI, "1")

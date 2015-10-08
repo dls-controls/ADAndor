@@ -3,6 +3,7 @@ lib
 include
 db
 dbd
+data
 *_BAK.adl
 documentation.html
 envPaths*
