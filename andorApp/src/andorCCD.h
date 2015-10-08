@@ -19,6 +19,8 @@
 #define MAX_ENUM_STRING_SIZE 26
 #define MAX_ADC_SPEEDS 16
 #define MAX_PREAMP_GAINS 16
+#define MAX_VS_SPEEDS 16
+#define MAX_VS_AMPLITUDES 16
 
 #define AndorCoolerParamString             "ANDOR_COOLER"
 #define AndorTempStatusMessageString       "ANDOR_TEMP_STAT"
@@ -29,6 +31,9 @@
 #define AndorAccumulatePeriodString        "ANDOR_ACCUMULATE_PERIOD"
 #define AndorPreAmpGainString              "ANDOR_PREAMP_GAIN"
 #define AndorAdcSpeedString                "ANDOR_ADC_SPEED"
+#define AndorVSSpeedString                 "ANDOR_VS_SPEED"
+#define AndorVSAmplitudeString             "ANDOR_VS_AMPLITUDE"
+#define AndorEMGainString                  "ANDOR_EM_GAIN"
 
 /**
  * Structure defining an ADC speed for the ADAndor driver.
@@ -53,6 +58,18 @@ typedef struct {
   char *EnumString;
   int EnumValue;
 } AndorPreAmpGain_t;
+
+typedef struct {
+  float VSSpeed;
+  char *EnumString;
+  int EnumValue;
+} AndorVSSpeed_t;
+
+typedef struct {
+  int VSAmplitude;
+  char *EnumString;
+  int EnumValue;
+} AndorVSAmplitude_t;
 
 /**
  * Driver for Andor CCD cameras using version 2 of their SDK; inherits from ADDriver class in ADCore.
@@ -86,7 +103,10 @@ class AndorCCD : public ADDriver {
   int AndorAccumulatePeriod;
   int AndorPreAmpGain;
   int AndorAdcSpeed;
-  #define LAST_ANDOR_PARAM AndorAdcSpeed
+  int AndorVSSpeed;
+  int AndorVSAmplitude;
+  int AndorEMGain;
+  #define LAST_ANDOR_PARAM AndorEMGain
 
  private:
 
@@ -96,6 +116,8 @@ class AndorCCD : public ADDriver {
   void saveDataFrame(int frameNumber);
   void setupADCSpeeds();
   void setupPreAmpGains();
+  void setupVSSpeeds();
+  void setupVSAmplitudes();
   unsigned int SaveAsSPE(char *fullFileName);
   /**
    * Additional image mode to those in ADImageMode_t
@@ -179,6 +201,10 @@ class AndorCCD : public ADDriver {
   int mTotalPreAmpGains;
   int mNumPreAmpGains;
   AndorPreAmpGain_t mPreAmpGains[MAX_PREAMP_GAINS];
+  int mNumVSSpeeds;
+  AndorVSSpeed_t mVSSpeeds[MAX_VS_SPEEDS];
+  int mNumVSAmplitudes;
+  AndorVSAmplitude_t mVSAmplitudes[MAX_VS_AMPLITUDES];
 
   //Shutter control parameters
   float mAcquireTime;

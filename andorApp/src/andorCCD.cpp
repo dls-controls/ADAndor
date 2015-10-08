@@ -116,6 +116,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   int status = asynSuccess;
   int i;
   int binX=1, binY=1, minX=0, minY=0, sizeX, sizeY;
+  int emGain=1;
   char model[256];
   static const char *functionName = "AndorCCD";
 
@@ -136,6 +137,9 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   createParam(AndorAccumulatePeriodString,      asynParamFloat64, &AndorAccumulatePeriod);
   createParam(AndorPreAmpGainString,              asynParamInt32, &AndorPreAmpGain);
   createParam(AndorAdcSpeedString,                asynParamInt32, &AndorAdcSpeed);
+  createParam(AndorVSSpeedString,                 asynParamInt32, &AndorVSSpeed);
+  createParam(AndorVSAmplitudeString,             asynParamInt32, &AndorVSAmplitude);
+  createParam(AndorEMGainString,                  asynParamInt32, &AndorEMGain);
 
   // Create the epicsEvent for signaling to the status task when parameters should have changed.
   // This will cause it to do a poll immediately, rather than wait for the poll time period.
@@ -162,6 +166,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
     checkStatus(GetHeadModel(model));
     checkStatus(SetReadMode(ARImage));
     checkStatus(SetImage(binX, binY, minX+1, minX+sizeX, minY+1, minY+sizeY));
+    checkStatus(GetEMCCDGain(&emGain));
     callParamCallbacks();
   } catch (const std::string &e) {
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -182,6 +187,17 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
     mPreAmpGains[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
   } 
   
+  // Initialize VSSpeed enums
+  for (i=0; i<MAX_VS_SPEEDS; i++) {
+    mVSSpeeds[i].EnumValue = i;
+    mVSSpeeds[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
+  } 
+  
+  // Initialize VSAmplitude enums
+  for (i=0; i<MAX_VS_SPEEDS; i++) {
+    mVSAmplitudes[i].EnumValue = i;
+    mVSAmplitudes[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
+  } 
 
   /* Set some default values for parameters */
   status =  setStringParam(ADManufacturer, "Andor");
@@ -213,10 +229,26 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   status |= setIntegerParam(AndorShutterMode, AShutterAuto);
   status |= setDoubleParam(ADShutterOpenDelay, 0.);
   status |= setDoubleParam(ADShutterCloseDelay, 0.);
+  status |= setIntegerParam(AndorVSSpeed, 0);
+  status |= setIntegerParam(AndorVSAmplitude, 0);
+  status |= setIntegerParam(AndorEMGain, emGain);
 
   setupADCSpeeds();
   setupPreAmpGains();
-  status |= setupShutter(-1);
+  setupVSSpeeds();
+  setupVSAmplitudes();
+
+  if (status == asynSuccess) {
+    status |= setupShutter(-1); 
+    if (status != asynSuccess) {
+      // Some cameras such as iXon dont like shutter open/close delays of zero so try something larger
+      status = asynSuccess;
+      printf("Re-trying setupShutter with longer delays\n");
+      status |= setDoubleParam(ADShutterOpenDelay, 0.05);
+      status |= setDoubleParam(ADShutterCloseDelay, 0.05);
+      status |= setupShutter(-1); 
+    }
+  }
 
   callParamCallbacks();
 
@@ -336,6 +368,72 @@ void AndorCCD::setupPreAmpGains()
                   mNumPreAmpGains, AndorPreAmpGain, 0);
 }
 
+void AndorCCD::setupVSSpeeds()
+{
+  int i;
+  AndorVSSpeed_t *pVSSpeed = mVSSpeeds;
+  float vsSpeed;
+  char *enumStrings[MAX_VS_SPEEDS];
+  int enumValues[MAX_VS_SPEEDS];
+  int enumSeverities[MAX_VS_SPEEDS];
+
+  mNumVSSpeeds = 0;
+  checkStatus(GetNumberVSSpeeds(&mNumVSSpeeds));
+  for (i=0; i<mNumVSSpeeds; i++) {
+      checkStatus(GetVSSpeed(i, &vsSpeed));
+      epicsSnprintf(pVSSpeed->EnumString, MAX_ENUM_STRING_SIZE, "%.2f uS", vsSpeed);
+      pVSSpeed->EnumValue = i;
+      pVSSpeed->VSSpeed = vsSpeed;
+      pVSSpeed++;
+  }
+  for (i=0; i<mNumVSSpeeds; i++) {
+    enumStrings[i] = mVSSpeeds[i].EnumString;
+    enumValues[i] = mVSSpeeds[i].EnumValue;
+    enumSeverities[i] = 0;
+  }
+  doCallbacksEnum(enumStrings, enumValues, enumSeverities, 
+                  mNumVSSpeeds, AndorVSSpeed, 0);
+}
+
+void AndorCCD::setupVSAmplitudes()
+{
+  int i;
+  AndorVSAmplitude_t *pVSAmplitude = mVSAmplitudes;
+  int vsAmplitude;
+  char *enumStrings[MAX_VS_SPEEDS];
+  int enumValues[MAX_VS_SPEEDS];
+  int enumSeverities[MAX_VS_SPEEDS];
+  char vsAmplitudeStr[256];
+
+
+  mNumVSAmplitudes = 0;
+  checkStatus(GetNumberVSAmplitudes(&mNumVSAmplitudes));
+  for (i=0; i<mNumVSAmplitudes; i++) {
+#if defined(_WIN32) || defined(_WIN64)
+      // Diamond doesnt have the win library supporting the GetVSAmplitureXXX() functions so added this which 
+      // gives gain select strings of 0,1,2.. etc regardless of what the actual gain is - just to get the windows build to work 
+      // TODO: remove ifdef when we get later windows lib supporting these functions 
+      vsAmplitude = i;
+      epicsSnprintf(pVSAmplitude->EnumString, MAX_ENUM_STRING_SIZE, "%d", i);
+#else
+      checkStatus(GetVSAmplitudeString(i, vsAmplitudeStr));
+      checkStatus(GetVSAmplitudeValue(i, &vsAmplitude));
+      epicsSnprintf(pVSAmplitude->EnumString, MAX_ENUM_STRING_SIZE, "%s", vsAmplitudeStr);
+#endif
+      pVSAmplitude->EnumValue = i;
+      pVSAmplitude->VSAmplitude = vsAmplitude;
+      pVSAmplitude++;
+  }
+  for (i=0; i<mNumVSAmplitudes; i++) {
+    enumStrings[i] = mVSAmplitudes[i].EnumString;
+    enumValues[i] = mVSAmplitudes[i].EnumValue;
+    enumSeverities[i] = 0;
+  }
+  doCallbacksEnum(enumStrings, enumValues, enumSeverities, 
+                  mNumVSAmplitudes, AndorVSAmplitude, 0);
+}
+
+
 asynStatus AndorCCD::readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], 
                               size_t nElements, size_t *nIn)
 {
@@ -355,6 +453,22 @@ asynStatus AndorCCD::readEnum(asynUser *pasynUser, char *strings[], int values[]
       if (strings[i]) free(strings[i]);
       strings[i] = epicsStrDup(mPreAmpGains[i].EnumString);
       values[i] = mPreAmpGains[i].EnumValue;
+      severities[i] = 0;
+    }
+  }
+  else if (function == AndorVSSpeed) {
+    for (i=0; ((i<mNumVSSpeeds) && (i<(int)nElements)); i++) {
+      if (strings[i]) free(strings[i]);
+      strings[i] = epicsStrDup(mVSSpeeds[i].EnumString);
+      values[i] = mVSSpeeds[i].EnumValue;
+      severities[i] = 0;
+    }
+  }
+  else if (function == AndorVSAmplitude) {
+    for (i=0; ((i<mNumVSAmplitudes) && (i<(int)nElements)); i++) {
+      if (strings[i]) free(strings[i]);
+      strings[i] = epicsStrDup(mVSAmplitudes[i].EnumString);
+      values[i] = mVSAmplitudes[i].EnumValue;
       severities[i] = 0;
     }
   }
@@ -406,7 +520,7 @@ void AndorCCD::setupADCSpeeds()
   * \param[in] details Controls the level of detail in the report. */
 void AndorCCD::report(FILE *fp, int details)
 {
-  int param1;
+  int param1, param2;
   float fParam1;
   int xsize, ysize;
   int i;
@@ -460,6 +574,35 @@ void AndorCCD::report(FILE *fp, int details)
         fprintf(fp, "    Index=%d, Gain=%f\n",
                 mPreAmpGains[i].EnumValue, mPreAmpGains[i].Gain);
       }
+      fprintf(fp, "  VS speeds available: %d\n", mNumVSSpeeds);
+      for (i=0; i<mNumVSSpeeds; i++) {
+        fprintf(fp, "    Index=%d, VSSpeed=%f\n",
+                mVSSpeeds[i].EnumValue, mVSSpeeds[i].VSSpeed);
+      }
+      checkStatus(GetFastestRecommendedVSSpeed(&param1, &fParam1));
+      fprintf(fp, "    FastestRecommendedVSSpeed %f\n", fParam1);
+      fprintf(fp, "  VS amplitudes available: %d\n", mNumVSAmplitudes);
+#if !(defined(_WIN32) || defined(_WIN64))
+      // Diamond does not have the win library supporting this function
+      for (i=0; i<mNumVSAmplitudes; i++) {
+        checkStatus(GetVSAmplitudeString(i, sParam));
+        fprintf(fp, "    Index=%d, VSAmplitudeValue=%d (EnumStr=%s, VSAmplitudeString=%s)\n",
+                mVSAmplitudes[i].EnumValue, mVSAmplitudes[i].VSAmplitude, mVSAmplitudes[i].EnumString, sParam);
+      }
+#endif      
+      if (GetEMGainRange(&param1, &param2)==DRV_SUCCESS) {
+        fprintf(fp, "  EMGainRange min=%d max=%d\n", param1, param2);
+      }
+      if (GetEMCCDGain(&param1)==DRV_SUCCESS) {
+        fprintf(fp, "  EMCCDGain=%d\n", param1);
+      }
+#if !(defined(_WIN32) || defined(_WIN64))
+      // Diamond does not have the win library supporting this function
+      if (GetEMAdvanced(&param1)==DRV_SUCCESS) {
+        fprintf(fp, "  EMAdvanced=%d\n", param1);
+      }
+#endif      
+
       capabilities.ulSize = sizeof(capabilities);
       checkStatus(GetCapabilities(&capabilities));
       fprintf(fp, "  Capabilities\n");
@@ -571,6 +714,54 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
         status = asynError;
       }
     }
+    else if (function == AndorEMGain) {
+      try {
+        checkStatus(SetEMCCDGain(value));
+      } catch (const std::string &e) {
+        // camera may default EMgain to max or min so we need to read it back
+        int emGain;
+        if (GetEMCCDGain(&emGain) == DRV_SUCCESS) setIntegerParam(function, emGain);
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+          "%s:%s: %s\n",
+          driverName, functionName, e.c_str());
+        status = asynError;
+      }
+    }
+    else if (function == AndorPreAmpGain) {
+      try {
+        float fGain;
+        checkStatus(SetPreAmpGain(value));
+        if (GetPreAmpGain(value, &fGain)==DRV_SUCCESS) setDoubleParam(ADGain, (epicsFloat64)fGain);
+      } catch (const std::string &e) {
+        setIntegerParam(function, oldValue);
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+          "%s:%s: %s\n",
+          driverName, functionName, e.c_str());
+        status = asynError;
+      }
+    }
+    else if (function == AndorVSSpeed) {
+      try {
+        checkStatus(SetVSSpeed(value));
+      } catch (const std::string &e) {
+        setIntegerParam(function, oldValue);
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+          "%s:%s: %s\n",
+          driverName, functionName, e.c_str());
+        status = asynError;
+      }
+    }
+    else if (function == AndorVSAmplitude) {
+      try {
+        checkStatus(SetVSAmplitude(value));
+      } catch (const std::string &e) {
+        setIntegerParam(function, oldValue);
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+          "%s:%s: %s\n",
+          driverName, functionName, e.c_str());
+        status = asynError;
+      }
+    }
     else if (function == ADShutterControl) {
       status = setupShutter(value);
     }
@@ -620,11 +811,13 @@ asynStatus AndorCCD::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     static const char *functionName = "writeFloat64";
+    epicsFloat64 oldValue;
 
     int minTemp = 0;
     int maxTemp = 0;
 
     /* Set the parameter and readback in the parameter library.  */
+    getDoubleParam(function, &oldValue);
     status = setDoubleParam(function, value);
 
     if (function == ADAcquireTime) {
@@ -637,11 +830,23 @@ asynStatus AndorCCD::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     }
     else if (function == ADGain) {
       try {
+        // SetPreAmpGain() expects an enum 0..2, find closest supported gain
+        int iBestGain = -1;
+        float fGain, fBestGain = 999999;
+        for (int i=0; i<mTotalPreAmpGains; i++) {
+            if ((GetPreAmpGain(i, &fGain) == DRV_SUCCESS) && ( abs(fGain - value) < abs(fBestGain - value) )){ 
+                iBestGain = i;
+                fBestGain = fGain;
+            }
+        }
         asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
           "%s:%s:, SetPreAmpGain(%d)\n", 
-          driverName, functionName, (int)value);
-        checkStatus(SetPreAmpGain((int)value));
+          driverName, functionName, iBestGain);
+        checkStatus(SetPreAmpGain(iBestGain));
+        setDoubleParam(function,fBestGain);
+        setIntegerParam(AndorPreAmpGain, iBestGain);
       } catch (const std::string &e) {
+        setDoubleParam(function, oldValue);
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
           "%s:%s: %s\n",
           driverName, functionName, e.c_str());
@@ -765,6 +970,10 @@ unsigned int AndorCCD::checkStatus(unsigned int returnStatus)
     return 0;
   } else if (returnStatus == DRV_NOT_INITIALIZED) {
     throw std::string("ERROR: Driver is not initialized.");
+  } else if (returnStatus == DRV_NOT_AVAILABLE) {
+    throw std::string("ERROR: Unavailable.");
+  } else if (returnStatus == DRV_NOT_SUPPORTED) {
+    throw std::string("ERROR: Unsupported functionality.");
   } else if (returnStatus == DRV_ACQUIRING) {
     throw std::string("ERROR: Not allowed. Currently acquiring data.");
   } else if (returnStatus == DRV_P1INVALID) {

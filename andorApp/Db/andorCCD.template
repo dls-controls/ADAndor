@@ -277,7 +277,51 @@ record(mbbi, "$(P)$(R)AndorPreAmpGain_RBV")
    field(SCAN, "I/O Intr")
 }
 
+# The VS speed enum values are constructed at run-time based on camera capabilities
+record(mbbo, "$(P)$(R)AndorVSSpeed")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_SPEED")
+}
 
+#% archiver 10 Monitor
+record(mbbi, "$(P)$(R)AndorVSSpeed_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_SPEED")
+   field(SCAN, "I/O Intr")
+}
+
+# The VS amplitude enum values are constructed at run-time based on camera capabilities
+record(mbbo, "$(P)$(R)AndorVSAmplitude")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_AMPLITUDE")
+}
+
+#% archiver 10 Monitor
+record(mbbi, "$(P)$(R)AndorVSAmplitude_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_AMPLITUDE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)AndorEMGain")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_EM_GAIN")
+}
+
+#% archiver 10 Monitor
+record(longin, "$(P)$(R)AndorEMGain_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_EM_GAIN")
+   field(SCAN, "I/O Intr")
+}
 
 #Records in ADBase that do not apply to Andor
 
