@@ -188,6 +188,7 @@ class AndorCCD : public ADDriver {
   double mPollingPeriod;
   double mFastPollingPeriod;
   unsigned int mAcquiringData;
+  unsigned int mClearADAquire;
   char *mInstallPath;
   bool mExiting;
   

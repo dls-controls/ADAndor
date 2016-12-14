@@ -265,7 +265,8 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   mFastPollingPeriod = 0.05; //seconds
 
   mAcquiringData = 0;
-  
+  mClearADAquire = 0;
+    
   mSPEHeader = (tagCSMAHEAD *) calloc(1, sizeof(tagCSMAHEAD));
   
   if (stackSize == 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
@@ -1144,6 +1145,21 @@ void AndorCCD::statusTask(void)
     /* Call the callbacks to update any changes */
     callParamCallbacks();
     this->unlock();
+
+    if (mClearADAquire)  {
+      // dataTask has requested statusTask to clear ADAquire
+      // Horrible delay (of 0.00001 minimum) seems to allow ADStatus callback to occure before we clear ADAquire.
+      // TODO understand and eliminate this sleep!!!
+      epicsThreadSleep(0.001);
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
+      "%s:%s: CLEARING ADAcquire (GetStatus value= %d)\n", 
+      driverName, "statusTask", value);
+      this->lock();
+      mClearADAquire=0;
+      setIntegerParam(ADAcquire,0);
+      callParamCallbacks();
+      this->unlock();
+    }
         
   } //End of loop
   printf("%s:%s: Status thread exiting ...\n", driverName, functionName);
@@ -1356,7 +1372,7 @@ asynStatus AndorCCD::setupAcquisition()
 void AndorCCD::dataTask(void)
 {
   epicsUInt32 status = 0;
-  int acquireStatus;
+  int acquireStatus = 0;
   char *errorString = NULL;
   int acquiring = 0;
   epicsInt32 numImagesCounter;
@@ -1522,11 +1538,13 @@ void AndorCCD::dataTask(void)
       
     //Now clear main thread flag
     mAcquiringData = 0;
-    setIntegerParam(ADAcquire, 0);
+    //Get statusTask to clear ADAquire to ensure callback occurs after status PVs are updated
+    mClearADAquire = 1;
+    //setIntegerParam(ADAcquire, 0);
     //setIntegerParam(ADStatus, 0); //Dont set this as the status thread sets it.
 
     /* Call the callbacks to update any changes */
-    callParamCallbacks();
+    callParamCallbacks();  
   } //End of loop
 
 }
