@@ -1,4 +1,4 @@
-#CONFIG
+# CONFIG
 -include $(CONFIG)/RULES.Dls
 # RULES
 

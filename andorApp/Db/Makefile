@@ -12,6 +12,7 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 
 DB += andorCCD.template
+DB += andorCCD-DLSGui.template
 DB += shamrock.template
 
 #----------------------------------------------------

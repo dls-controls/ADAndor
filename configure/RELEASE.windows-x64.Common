@@ -1,0 +1,3 @@
+EPICS_BASE=W:/epics/R3.14.12.3/base
+SUPPORT=W:/prod/R3.14.12.3/support
+WORK_MG=H:/lkz95212/R3.14.12.3/support

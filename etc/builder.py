@@ -3,6 +3,11 @@ from iocbuilder.arginfo import *
 from iocbuilder.modules.asyn import Asyn, AsynPort, AsynIP
 
 from iocbuilder.modules.ADCore import ADCore, ADBaseTemplate, NDFileTemplate, makeTemplateInstance, includesTemplates
+from iocbuilder.modules.andorCCDSDK import AndorCCDSDK
+
+# Library names differ between windows and linux.
+epics_host_arch = Architecture()
+is_windows = epics_host_arch.find('win') >= 0
 
 @includesTemplates(ADBaseTemplate, NDFileTemplate)
 class andorCCDTemplate(AutoSubstitution):
@@ -13,12 +18,16 @@ class andorCCDTemplate(AutoSubstitution):
 
 class AndorSpecificMustBeLoadedFirst(Device):
     """Library dependencies for areaDetector"""
-    LibFileList = ['andor']
+    # Install different Andor libraries, depending on the target platform.
+    if is_windows:
+        LibFileList = ['atmcd64m']
+    else:
+        LibFileList = ['andor']
     AutoInstantiate = True
 
 class andorCCD(AsynPort):
     """Creates a andorCCD camera areaDetector driver"""
-    Dependencies = (AndorSpecificMustBeLoadedFirst, ADCore)
+    Dependencies = (AndorSpecificMustBeLoadedFirst, ADCore, AndorCCDSDK)
     # This tells xmlbuilder to use PORT instead of name as the row ID
     UniqueName = "PORT"
     _SpecificTemplate = andorCCDTemplate
@@ -53,8 +62,13 @@ class andorCCD(AsynPort):
         STACKSIZE = Simple('The stack size for the asyn port driver thread', int))
 
     # Device attributes
-    LibFileList = ['andorCCD', 'andor', 'shamrockcif']
     DbdFileList = ['andorCCDSupport', 'shamrockSupport']
+
+    # Install different Andor libraries, depending on the target platform.
+    if is_windows:
+        LibFileList = ['andorCCD', 'atmcd64m', 'ShamrockCIFm']
+    else:
+        LibFileList = ['andorCCD', 'andor', 'shamrockcif']
 
     def Initialise(self):
         print '# andorCCDConfig(portName, installPath, shamrockID, maxBuffers, maxMemory, priority, stackSize)'
