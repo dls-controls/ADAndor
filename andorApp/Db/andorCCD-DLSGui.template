@@ -71,7 +71,6 @@
 # % gui, $(PORT), readback, Shutter close delay,   $(P)$(R)ShutterCloseDelay_RBV
 # % gui, $(PORT), demand, Temperature setpoint,   $(P)$(R)Temperature
 # % gui, $(PORT), readback, Temperature setpoint,   $(P)$(R)Temperature_RBV
-# % gui, $(PORT), readback, Current temperature,   $(P)$(R)Temperature_RBV
 # Memory
 # % gui, $(PORT), readback, Max memory,   $(P)$(R)PoolMaxMem
 # % gui, $(PORT), readback, Max buffers,   $(P)$(R)PoolMaxBuffers

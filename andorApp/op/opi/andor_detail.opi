@@ -10,7 +10,7 @@
   <background_color>
     <color name="Canvas" red="200" green="200" blue="200" />
   </background_color>
-  <boy_version>5.1.0.201610071043</boy_version>
+  <boy_version>5.1.0.201612131649</boy_version>
   <foreground_color>
     <color red="192" green="192" blue="192" />
   </foreground_color>
@@ -62,7 +62,7 @@
     <font>
       <opifont.name fontName="Liberation Sans" height="11" style="0">Default</opifont.name>
     </font>
-    <height>1676</height>
+    <height>2000</height>
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -636,7 +636,7 @@
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>344</width>
+      <width>360</width>
       <wuid>-28026f83:158f32ed47f:-5b5f</wuid>
       <x>0</x>
       <y>0</y>
@@ -658,7 +658,7 @@
           <color name="Text: FG" red="0" green="0" blue="0" />
         </foreground_color>
         <group_name></group_name>
-        <height>108</height>
+        <height>106</height>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <DESC>Camera</DESC>
@@ -676,7 +676,7 @@
         <tooltip></tooltip>
         <visible>true</visible>
         <widget_type>Linking Container</widget_type>
-        <width>364</width>
+        <width>362</width>
         <wuid>-28026f83:158f32ed47f:-5b5e</wuid>
         <x>0</x>
         <y>0</y>
@@ -718,7 +718,7 @@
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b5d</wuid>
       <x>160</x>
       <y>108</y>
@@ -759,7 +759,7 @@
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b5b</wuid>
       <x>160</x>
       <y>135</y>
@@ -852,7 +852,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b59</wuid>
       <x>160</x>
       <y>162</y>
@@ -945,7 +945,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b57</wuid>
       <x>160</x>
       <y>189</y>
@@ -1038,7 +1038,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b55</wuid>
       <x>160</x>
       <y>216</y>
@@ -1131,7 +1131,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b53</wuid>
       <x>160</x>
       <y>243</y>
@@ -1224,7 +1224,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b50</wuid>
       <x>160</x>
       <y>270</y>
@@ -1265,7 +1265,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b4d</wuid>
       <x>160</x>
       <y>297</y>
@@ -1402,7 +1402,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b4a</wuid>
       <x>160</x>
       <y>324</y>
@@ -1539,7 +1539,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b48</wuid>
       <x>160</x>
       <y>351</y>
@@ -1689,7 +1689,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b46</wuid>
       <x>160</x>
       <y>378</y>
@@ -1782,7 +1782,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b43</wuid>
       <x>160</x>
       <y>405</y>
@@ -1875,7 +1875,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b40</wuid>
       <x>160</x>
       <y>432</y>
@@ -2025,7 +2025,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b3d</wuid>
       <x>160</x>
       <y>459</y>
@@ -2175,7 +2175,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b3a</wuid>
       <x>160</x>
       <y>486</y>
@@ -2325,7 +2325,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b37</wuid>
       <x>160</x>
       <y>513</y>
@@ -2475,7 +2475,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b34</wuid>
       <x>160</x>
       <y>540</y>
@@ -2625,7 +2625,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b32</wuid>
       <x>160</x>
       <y>567</y>
@@ -2775,7 +2775,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b30</wuid>
       <x>160</x>
       <y>594</y>
@@ -2868,7 +2868,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b2e</wuid>
       <x>160</x>
       <y>621</y>
@@ -2961,7 +2961,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b2b</wuid>
       <x>160</x>
       <y>648</y>
@@ -3054,7 +3054,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b28</wuid>
       <x>160</x>
       <y>675</y>
@@ -3095,7 +3095,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b26</wuid>
       <x>160</x>
       <y>702</y>
@@ -3245,7 +3245,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b23</wuid>
       <x>160</x>
       <y>729</y>
@@ -3395,7 +3395,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b20</wuid>
       <x>160</x>
       <y>756</y>
@@ -3488,7 +3488,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b1d</wuid>
       <x>160</x>
       <y>783</y>
@@ -3625,7 +3625,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b1b</wuid>
       <x>160</x>
       <y>810</y>
@@ -3762,7 +3762,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b18</wuid>
       <x>160</x>
       <y>837</y>
@@ -3912,7 +3912,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b15</wuid>
       <x>160</x>
       <y>864</y>
@@ -4005,7 +4005,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b13</wuid>
       <x>160</x>
       <y>891</y>
@@ -4142,7 +4142,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b10</wuid>
       <x>160</x>
       <y>918</y>
@@ -4292,7 +4292,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b0e</wuid>
       <x>160</x>
       <y>945</y>
@@ -4385,7 +4385,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b0b</wuid>
       <x>160</x>
       <y>972</y>
@@ -4522,7 +4522,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b08</wuid>
       <x>160</x>
       <y>999</y>
@@ -4563,7 +4563,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b06</wuid>
       <x>160</x>
       <y>1026</y>
@@ -4661,7 +4661,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b03</wuid>
       <x>160</x>
       <y>1053</y>
@@ -4798,7 +4798,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5b00</wuid>
       <x>160</x>
       <y>1080</y>
@@ -4935,7 +4935,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5afd</wuid>
       <x>160</x>
       <y>1107</y>
@@ -5028,7 +5028,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5afb</wuid>
       <x>160</x>
       <y>1134</y>
@@ -5178,7 +5178,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5af9</wuid>
       <x>160</x>
       <y>1161</y>
@@ -5328,7 +5328,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5af7</wuid>
       <x>160</x>
       <y>1188</y>
@@ -5478,7 +5478,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5af5</wuid>
       <x>160</x>
       <y>1215</y>
@@ -5571,7 +5571,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5af3</wuid>
       <x>160</x>
       <y>1242</y>
@@ -5612,7 +5612,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5af1</wuid>
       <x>160</x>
       <y>1269</y>
@@ -5705,7 +5705,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5aef</wuid>
       <x>160</x>
       <y>1296</y>
@@ -5798,7 +5798,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5aec</wuid>
       <x>160</x>
       <y>1323</y>
@@ -5891,7 +5891,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5aea</wuid>
       <x>160</x>
       <y>1350</y>
@@ -5984,7 +5984,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5ae8</wuid>
       <x>160</x>
       <y>1377</y>
@@ -6077,7 +6077,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5ae5</wuid>
       <x>160</x>
       <y>1404</y>
@@ -6170,7 +6170,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5ae2</wuid>
       <x>160</x>
       <y>1431</y>
@@ -6211,7 +6211,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5adf</wuid>
       <x>160</x>
       <y>1458</y>
@@ -6361,7 +6361,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5adc</wuid>
       <x>160</x>
       <y>1485</y>
@@ -6446,7 +6446,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5ad9</wuid>
       <x>160</x>
       <y>1512</y>
@@ -6531,7 +6531,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5ad7</wuid>
       <x>160</x>
       <y>1539</y>
@@ -6668,7 +6668,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5ad4</wuid>
       <x>160</x>
       <y>1566</y>
@@ -6805,7 +6805,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-5ad2</wuid>
       <x>160</x>
       <y>1593</y>
@@ -6942,7 +6942,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-56a7</wuid>
       <x>160</x>
       <y>1620</y>
@@ -7079,7 +7079,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-521f</wuid>
       <x>160</x>
       <y>1647</y>
@@ -7229,7 +7229,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-521e</wuid>
       <x>160</x>
       <y>1674</y>
@@ -7314,7 +7314,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-521d</wuid>
       <x>160</x>
       <y>1701</y>
@@ -7464,7 +7464,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-521c</wuid>
       <x>160</x>
       <y>1728</y>
@@ -7557,7 +7557,7 @@ $(pv_value)</tooltip>
       <transparent>false</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>184</width>
+      <width>200</width>
       <wuid>-28026f83:158f32ed47f:-521b</wuid>
       <x>160</x>
       <y>1755</y>
