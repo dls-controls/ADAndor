@@ -2,9 +2,9 @@
 TOP = .
 include $(TOP)/configure/CONFIG
 DIRS := $(DIRS) configure
-DIRS := $(DIRS) andorSupport
+#DIRS := $(DIRS) andorSupport
 DIRS := $(DIRS) andorApp
-andorApp_DEPEND_DIRS += andorSupport
+#andorApp_DEPEND_DIRS += andorSupport
 ifeq ($(BUILD_IOCS), YES)
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard iocs))
 iocs_DEPEND_DIRS += andorApp
