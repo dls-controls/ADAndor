@@ -156,6 +156,7 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 
 
 # These are the records that are new for the Andor detector 
+# % autosave 2 VAL
 record(bo, "$(P)$(R)AndorCooler")
 {
     field(PINI, "YES")
@@ -278,6 +279,7 @@ record(mbbi, "$(P)$(R)AndorADCSpeed_RBV")
 }
 
 # The pre-amp gain enum values are constructed at run-time based on camera capabilities
+# % autosave 2 VAL
 record(mbbo, "$(P)$(R)AndorPreAmpGain")
 {
     field(PINI, "1")
@@ -294,6 +296,7 @@ record(mbbi, "$(P)$(R)AndorPreAmpGain_RBV")
 }
 
 # The VS speed enum values are constructed at run-time based on camera capabilities
+# % autosave 2 VAL
 record(mbbo, "$(P)$(R)AndorVSSpeed")
 {
     field(PINI, "1")
@@ -310,6 +313,7 @@ record(mbbi, "$(P)$(R)AndorVSSpeed_RBV")
 }
 
 # The VS amplitude enum values are constructed at run-time based on camera capabilities
+# % autosave 2 VAL
 record(mbbo, "$(P)$(R)AndorVSAmplitude")
 {
     field(PINI, "1")
