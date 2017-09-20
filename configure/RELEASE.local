@@ -1,6 +1,7 @@
-ASYN=         $(SUPPORT)/asyn/4-26
-ADCORE=       $(SUPPORT)/ADCore/2-4dls8
+ASYN=         $(SUPPORT)/asyn/4-31
+ADCORE=       $(SUPPORT)/ADCore/2-6dls1
 ANDORCCDSDK=  $(SUPPORT)/andorCCDSDK/2-102dls1alpha
+ADSupport=    $(SUPPORT)/ADSupport/1-2
 
 EPICS_BASE=/dls_sw/epics/R3.14.12.3/base
 
