@@ -89,6 +89,11 @@ const epicsInt32 AndorCCD::AFFRAW  = 4;
 const epicsInt32 AndorCCD::AFFFITS = 5;
 const epicsInt32 AndorCCD::AFFSPE  = 6;
 
+const epicsInt32 AndorCCD::AFanModeOnFull = 2;
+const epicsInt32 AndorCCD::AFanModeOnLow  = 0;
+const epicsInt32 AndorCCD::AFanModeOff = 1;
+const epicsInt32 AndorCCD::AFanModeUnavailable = -1;
+
 //C Function prototypes to tie in with EPICS
 static void andorStatusTaskC(void *drvPvt);
 static void andorDataTaskC(void *drvPvt);
@@ -155,6 +160,8 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   createParam(AndorVSSpeedString,                 asynParamInt32, &AndorVSSpeed);
   createParam(AndorVSAmplitudeString,             asynParamInt32, &AndorVSAmplitude);
   createParam(AndorEMGainString,                  asynParamInt32, &AndorEMGain);
+  createParam(AndorFanModeString,                 asynParamInt32, &AndorFanMode);
+  createParam(AndorFanStatusString,               asynParamOctet, &AndorFanStatus);
   createParam(AndorBaselineClampString,           asynParamInt32, &AndorBaselineClamp);
   createParam(AndorReadOutModeString,             asynParamInt32, &AndorReadOutMode);
 
@@ -233,7 +240,13 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   for (i=0; i<MAX_VS_SPEEDS; i++) {
     mVSAmplitudes[i].EnumValue = i;
     mVSAmplitudes[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
-  } 
+  }
+
+  // Initialize Fan Mode enums
+  for (i=0; i<MAX_FAN_MODES; i++) {
+    mFanModes[i].FanModeNum = 0;
+    mFanModes[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
+  }
 
   /* Set some default values for parameters */
   status =  setStringParam(ADManufacturer, "Andor");
@@ -279,12 +292,15 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   status |= setIntegerParam(AndorVSSpeed, 0);
   status |= setIntegerParam(AndorVSAmplitude, 0);
   status |= setIntegerParam(AndorEMGain, emGain);
+  status |= setIntegerParam(AndorFanMode, 0);
+  status |= setStringParam(AndorFanStatus, "Unknown");
   status |= setIntegerParam(AndorReadOutMode, ARImage);
 
   setupADCSpeeds();
   setupPreAmpGains();
   setupVSSpeeds();
   setupVSAmplitudes();
+  setupFanModes();
 
   if (status == asynSuccess) {
     status |= setupShutter(-1); 
@@ -483,6 +499,46 @@ void AndorCCD::setupVSAmplitudes()
                   mNumVSAmplitudes, AndorVSAmplitude, 0);
 }
 
+void AndorCCD::setupFanModes()
+{
+  // This enum is different to the others as I can have no possible values, or 2, or 3.
+  // In addition, I cannot 'get' the current fan mode, and I do not want to set it at startup, so instead
+  // there is a separate StringParam which can display 'Unknown'.
+  int i;
+  AndorFanMode_t *pFanMode = mFanModes;
+  char *enumStrings[MAX_FAN_MODES];
+  int enumValues[MAX_FAN_MODES];
+  int enumSeverities[MAX_FAN_MODES] = {0};
+  bool fanAvailable;
+  bool lowSpeedAvailable;
+
+  char fanModeStrings[MAX_FAN_MODES][MAX_ENUM_STRING_SIZE] = {"Off", "On Full", "On Low"};
+  int fanModeValues[MAX_FAN_MODES] = {AFanModeOff, AFanModeOnFull, AFanModeOnLow};
+
+  fanAvailable = (bool)(mCapabilities.ulFeatures & AC_FEATURES_FANCONTROL);
+  lowSpeedAvailable = (bool)(mCapabilities.ulFeatures & AC_FEATURES_MIDFANCONTROL);
+
+  if (!fanAvailable) {
+    mNumFanModes = 1;
+    epicsSnprintf(pFanMode->EnumString, MAX_ENUM_STRING_SIZE, "Unavailable");
+    pFanMode->FanModeNum = AFanModeUnavailable;
+  } else {
+    mNumFanModes = (lowSpeedAvailable) ? 3 : 2;
+
+    for (i=0; i<mNumFanModes; i++) {
+      epicsSnprintf(pFanMode->EnumString, MAX_ENUM_STRING_SIZE, fanModeStrings[i]);
+      pFanMode->FanModeNum = fanModeValues[i];
+      pFanMode++;
+    }
+  }
+
+  for (i=0; i<mNumFanModes; i++) {
+    epicsSnprintf(enumStrings[i], MAX_ENUM_STRING_SIZE, mFanModes[i].EnumString);
+    enumValues[i] = i;
+  }
+  doCallbacksEnum(enumStrings, enumValues, enumSeverities,
+                  mNumFanModes, AndorFanMode, 0);
+}
 
 asynStatus AndorCCD::readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], 
                               size_t nElements, size_t *nIn)
@@ -519,6 +575,14 @@ asynStatus AndorCCD::readEnum(asynUser *pasynUser, char *strings[], int values[]
       if (strings[i]) free(strings[i]);
       strings[i] = epicsStrDup(mVSAmplitudes[i].EnumString);
       values[i] = mVSAmplitudes[i].EnumValue;
+      severities[i] = 0;
+    }
+  }
+  else if (function == AndorFanMode) {
+    for (i=0; ((i<mNumFanModes) && (i<(int)nElements)); i++) {
+      if (strings[i]) free(strings[i]);
+      strings[i] = epicsStrDup(mFanModes[i].EnumString);
+      values[i] = mFanModes[i].EnumValue;
       severities[i] = 0;
     }
   }
@@ -810,6 +874,25 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
           "%s:%s: %s\n",
           driverName, functionName, e.c_str());
         status = asynError;
+      }
+    }
+    else if (function == AndorFanMode) {
+      // If fan mode is unavailable, I don't want to do anything here.
+      int modeNum = mFanModes[value].FanModeNum;
+      if (modeNum != AFanModeUnavailable) {
+        try {
+          checkStatus(SetFanMode(modeNum));
+        } catch (const std::string &e) {
+          setIntegerParam(function, oldValue);
+          asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s: %s\n",
+                    driverName, functionName, e.c_str());
+          status = asynError;
+        }
+
+        if (!status) {
+          status |= setStringParam(AndorFanStatus, mFanModes[value].EnumString);
+        }
       }
     }
     else if (function == ADShutterControl) {

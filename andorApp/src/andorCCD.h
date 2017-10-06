@@ -22,6 +22,7 @@
 #define MAX_PREAMP_GAINS 16
 #define MAX_VS_SPEEDS 16
 #define MAX_VS_AMPLITUDES 16
+#define MAX_FAN_MODES 3
 
 #define AndorCoolerParamString             "ANDOR_COOLER"
 #define AndorTempStatusMessageString       "ANDOR_TEMP_STAT"
@@ -38,6 +39,8 @@
 #define AndorVSSpeedString                 "ANDOR_VS_SPEED"
 #define AndorVSAmplitudeString             "ANDOR_VS_AMPLITUDE"
 #define AndorEMGainString                  "ANDOR_EM_GAIN"
+#define AndorFanModeString                 "ANDOR_FAN_MODE"
+#define AndorFanStatusString               "ANDOR_FAN_STATUS"
 #define AndorBaselineClampString           "ANDOR_BASELINE_CLAMP"
 #define AndorReadOutModeString             "ANDOR_READOUT_MODE"
 
@@ -77,6 +80,11 @@ typedef struct {
   int EnumValue;
 } AndorVSAmplitude_t;
 
+typedef struct {
+  int FanModeNum;
+  char *EnumString;
+} AndorFanMode_t;
+
 /**
  * Driver for Andor CCD cameras using version 2 of their SDK; inherits from ADDriver class in ADCore.
  *
@@ -115,6 +123,8 @@ class AndorCCD : public ADDriver {
   int AndorVSSpeed;
   int AndorVSAmplitude;
   int AndorEMGain;
+  int AndorFanMode;
+  int AndorFanStatus;
   int AndorBaselineClamp;
   int AndorReadOutMode;
   #define LAST_ANDOR_PARAM AndorReadOutMode
@@ -129,6 +139,7 @@ class AndorCCD : public ADDriver {
   void setupPreAmpGains();
   void setupVSSpeeds();
   void setupVSAmplitudes();
+  void setupFanModes();
   unsigned int SaveAsSPE(char *fullFileName);
   /**
    * Additional image mode to those in ADImageMode_t
@@ -196,6 +207,14 @@ class AndorCCD : public ADDriver {
   static const epicsInt32 AFFFITS;
   static const epicsInt32 AFFSPE;
 
+  /**
+   * List of Fan modes
+   */
+  static const epicsInt32 AFanModeOnFull;
+  static const epicsInt32 AFanModeOnLow;
+  static const epicsInt32 AFanModeOff;
+  static const epicsInt32 AFanModeUnavailable;
+
   epicsEventId statusEvent;
   epicsEventId dataEvent;
   double mPollingPeriod;
@@ -204,7 +223,7 @@ class AndorCCD : public ADDriver {
   unsigned int mClearADAquire;
   char *mInstallPath;
   bool mExiting;
-  
+
   /**
    * ADC speed parameters
    */
@@ -219,6 +238,8 @@ class AndorCCD : public ADDriver {
   AndorVSSpeed_t mVSSpeeds[MAX_VS_SPEEDS];
   int mNumVSAmplitudes;
   AndorVSAmplitude_t mVSAmplitudes[MAX_VS_AMPLITUDES];
+  int mNumFanModes;
+  AndorFanMode_t mFanModes[MAX_FAN_MODES];
 
   //Shutter control parameters
   float mAcquireTime;
