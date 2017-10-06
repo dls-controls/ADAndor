@@ -71,6 +71,7 @@
 # % gui, $(PORT), readback, Shutter close delay,   $(P)$(R)ShutterCloseDelay_RBV
 # % gui, $(PORT), demand, Temperature setpoint,   $(P)$(R)Temperature
 # % gui, $(PORT), readback, Temperature setpoint,   $(P)$(R)Temperature_RBV
+# % gui, $(PORT), readback, Current temperature,   $(P)$(R)TemperatureActual
 # Memory
 # % gui, $(PORT), readback, Max memory,   $(P)$(R)PoolMaxMem
 # % gui, $(PORT), readback, Max buffers,   $(P)$(R)PoolMaxBuffers
@@ -93,8 +94,11 @@
 # % gui, $(PORT), readback, Vertical shift amplitude,   $(P)$(R)AndorVSAmplitude_RBV
 # % gui, $(PORT), demand, EM CCD gain,   $(P)$(R)AndorEMGain
 # % gui, $(PORT), readback, EM CCD gain,   $(P)$(R)AndorEMGain_RBV
+# % gui, $(PORT), demand, Fan control,   $(P)$(R)AndorFanMode
+# % gui, $(PORT), readback, Fan control,   $(P)$(R)AndorFanStatus_RBV
 # % gui, $(PORT), enum, Cooler control,   $(P)$(R)AndorCooler
 # % gui, $(PORT), demand, Cooler temperature,   $(P)$(R)Temperature
 # % gui, $(PORT), readback, Cooler temperature,   $(P)$(R)Temperature_RBV
+# % gui, $(PORT), readback, Current temperature,   $(P)$(R)TemperatureActual
 # % gui, $(PORT), readback, Cooler status, $(P)$(R)AndorTempStatus_RBV
 # % gui, $(PORT), readback, Driver status, $(P)$(R)AndorMessage_RBV
