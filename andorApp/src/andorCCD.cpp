@@ -582,7 +582,7 @@ asynStatus AndorCCD::readEnum(asynUser *pasynUser, char *strings[], int values[]
     for (i=0; ((i<mNumFanModes) && (i<(int)nElements)); i++) {
       if (strings[i]) free(strings[i]);
       strings[i] = epicsStrDup(mFanModes[i].EnumString);
-      values[i] = mFanModes[i].EnumValue;
+      values[i] = i;
       severities[i] = 0;
     }
   }
@@ -891,7 +891,7 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
         }
 
         if (!status) {
-          status |= setStringParam(AndorFanStatus, mFanModes[value].EnumString);
+          status = setStringParam(AndorFanStatus, mFanModes[value].EnumString);
         }
       }
     }
