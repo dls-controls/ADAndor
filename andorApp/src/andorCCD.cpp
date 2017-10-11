@@ -122,7 +122,6 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   int status = asynSuccess;
   int i;
   int binX=1, binY=1, minX=0, minY=0, sizeX, sizeY;
-  int emGain=1;
   char model[256];
   char SDKVersion[256];
   char tempString[256];
@@ -154,7 +153,6 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   createParam(AndorAdcSpeedString,                asynParamInt32, &AndorAdcSpeed);
   createParam(AndorVSSpeedString,                 asynParamInt32, &AndorVSSpeed);
   createParam(AndorVSAmplitudeString,             asynParamInt32, &AndorVSAmplitude);
-  createParam(AndorEMGainString,                  asynParamInt32, &AndorEMGain);
   createParam(AndorBaselineClampString,           asynParamInt32, &AndorBaselineClamp);
   createParam(AndorReadOutModeString,             asynParamInt32, &AndorReadOutMode);
 
@@ -199,7 +197,6 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
     checkStatus(GetVersionInfo(AT_SDKVersion, SDKVersion, sizeof(SDKVersion)));
     checkStatus(SetReadMode(ARImage));
     checkStatus(SetImage(binX, binY, minX+1, minX+sizeX, minY+1, minY+sizeY));
-    checkStatus(GetEMCCDGain(&emGain));
     checkStatus(GetShutterMinTimes(&mMinShutterCloseTime, &mMinShutterOpenTime));
     mCapabilities.ulSize = sizeof(mCapabilities);
     checkStatus(GetCapabilities(&mCapabilities));
@@ -278,7 +275,6 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   status |= setDoubleParam(ADShutterCloseDelay, 0.);
   status |= setIntegerParam(AndorVSSpeed, 0);
   status |= setIntegerParam(AndorVSAmplitude, 0);
-  status |= setIntegerParam(AndorEMGain, emGain);
   status |= setIntegerParam(AndorReadOutMode, ARImage);
 
   setupADCSpeeds();
@@ -570,7 +566,7 @@ void AndorCCD::setupADCSpeeds()
   * \param[in] details Controls the level of detail in the report. */
 void AndorCCD::report(FILE *fp, int details)
 {
-  int param1, param2;
+  int param1;
   float fParam1;
   int xsize, ysize;
   int i;
@@ -638,19 +634,7 @@ void AndorCCD::report(FILE *fp, int details)
         fprintf(fp, "    Index=%d, VSAmplitudeValue=%d (EnumStr=%s, VSAmplitudeString=%s)\n",
                 mVSAmplitudes[i].EnumValue, mVSAmplitudes[i].VSAmplitude, mVSAmplitudes[i].EnumString, sParam);
       }
-#endif      
-      if (GetEMGainRange(&param1, &param2)==DRV_SUCCESS) {
-        fprintf(fp, "  EMGainRange min=%d max=%d\n", param1, param2);
-      }
-      if (GetEMCCDGain(&param1)==DRV_SUCCESS) {
-        fprintf(fp, "  EMCCDGain=%d\n", param1);
-      }
-#if !(defined(_WIN32) || defined(_WIN64))
-      // Diamond does not have the win library supporting this function
-      if (GetEMAdvanced(&param1)==DRV_SUCCESS) {
-        fprintf(fp, "  EMAdvanced=%d\n", param1);
-      }
-#endif      
+#endif
 
       fprintf(fp, "  Capabilities\n");
       fprintf(fp, "        AcqModes=0x%X\n", (int)mCapabilities.ulAcqModes);
@@ -758,19 +742,6 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
           checkStatus(CoolerON());
         }
       } catch (const std::string &e) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-          "%s:%s: %s\n",
-          driverName, functionName, e.c_str());
-        status = asynError;
-      }
-    }
-    else if (function == AndorEMGain) {
-      try {
-        checkStatus(SetEMCCDGain(value));
-      } catch (const std::string &e) {
-        // camera may default EMgain to max or min so we need to read it back
-        int emGain;
-        if (GetEMCCDGain(&emGain) == DRV_SUCCESS) setIntegerParam(function, emGain);
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
           "%s:%s: %s\n",
           driverName, functionName, e.c_str());
