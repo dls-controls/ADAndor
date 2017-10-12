@@ -748,19 +748,6 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
         status = asynError;
       }
     }
-    else if (function == AndorPreAmpGain) {
-      try {
-        float fGain;
-        checkStatus(SetPreAmpGain(value));
-        if (GetPreAmpGain(value, &fGain)==DRV_SUCCESS) setDoubleParam(ADGain, (epicsFloat64)fGain);
-      } catch (const std::string &e) {
-        setIntegerParam(function, oldValue);
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-          "%s:%s: %s\n",
-          driverName, functionName, e.c_str());
-        status = asynError;
-      }
-    }
     else if (function == AndorVSSpeed) {
       try {
         checkStatus(SetVSSpeed(value));
@@ -835,13 +822,11 @@ asynStatus AndorCCD::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     static const char *functionName = "writeFloat64";
-    epicsFloat64 oldValue;
 
     int minTemp = 0;
     int maxTemp = 0;
 
     /* Set the parameter and readback in the parameter library.  */
-    getDoubleParam(function, &oldValue);
     status = setDoubleParam(function, value);
 
     if (function == ADAcquireTime) {
@@ -851,31 +836,6 @@ asynStatus AndorCCD::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     else if (function == ADAcquirePeriod) {
       mAcquirePeriod = (float)value;  
       status = setupAcquisition();
-    }
-    else if (function == ADGain) {
-      try {
-        // SetPreAmpGain() expects an enum 0..2, find closest supported gain
-        int iBestGain = -1;
-        float fGain, fBestGain = 999999;
-        for (int i=0; i<mTotalPreAmpGains; i++) {
-            if ((GetPreAmpGain(i, &fGain) == DRV_SUCCESS) && ( abs(fGain - value) < abs(fBestGain - value) )){ 
-                iBestGain = i;
-                fBestGain = fGain;
-            }
-        }
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-          "%s:%s:, SetPreAmpGain(%d)\n", 
-          driverName, functionName, iBestGain);
-        checkStatus(SetPreAmpGain(iBestGain));
-        setDoubleParam(function,fBestGain);
-        setIntegerParam(AndorPreAmpGain, iBestGain);
-      } catch (const std::string &e) {
-        setDoubleParam(function, oldValue);
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-          "%s:%s: %s\n",
-          driverName, functionName, e.c_str());
-        status = asynError;
-      }
     }
     else if (function == AndorAccumulatePeriod) {
       mAccumulatePeriod = (float)value;  
