@@ -38,7 +38,6 @@
 #define AndorAdcSpeedString                "ANDOR_ADC_SPEED"
 #define AndorVSSpeedString                 "ANDOR_VS_SPEED"
 #define AndorVSAmplitudeString             "ANDOR_VS_AMPLITUDE"
-#define AndorEMGainString                  "ANDOR_EM_GAIN"
 #define AndorFanModeString                 "ANDOR_FAN_MODE"
 #define AndorFanStatusString               "ANDOR_FAN_STATUS"
 #define AndorBaselineClampString           "ANDOR_BASELINE_CLAMP"
@@ -122,7 +121,6 @@ class AndorCCD : public ADDriver {
   int AndorAdcSpeed;
   int AndorVSSpeed;
   int AndorVSAmplitude;
-  int AndorEMGain;
   int AndorFanMode;
   int AndorFanStatus;
   int AndorBaselineClamp;
