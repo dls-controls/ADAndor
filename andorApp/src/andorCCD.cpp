@@ -89,9 +89,9 @@ const epicsInt32 AndorCCD::AFFRAW  = 4;
 const epicsInt32 AndorCCD::AFFFITS = 5;
 const epicsInt32 AndorCCD::AFFSPE  = 6;
 
-const epicsInt32 AndorCCD::AFanModeOnFull = 2;
-const epicsInt32 AndorCCD::AFanModeOnLow  = 0;
-const epicsInt32 AndorCCD::AFanModeOff = 1;
+const epicsInt32 AndorCCD::AFanModeOnFull = 0;
+const epicsInt32 AndorCCD::AFanModeOnLow  = 1;
+const epicsInt32 AndorCCD::AFanModeOff = 2;
 const epicsInt32 AndorCCD::AFanModeUnavailable = -1;
 
 //C Function prototypes to tie in with EPICS
@@ -529,7 +529,7 @@ void AndorCCD::setupFanModes()
   }
 
   for (i=0; i<mNumFanModes; i++) {
-    epicsSnprintf(enumStrings[i], MAX_ENUM_STRING_SIZE, mFanModes[i].EnumString);
+    enumStrings[i] = mFanModes[i].EnumString;
     enumValues[i] = i;
   }
   doCallbacksEnum(enumStrings, enumValues, enumSeverities,
