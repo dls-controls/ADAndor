@@ -14,3 +14,5 @@ O.*/
 *~
 *.swp
 *.dll
+.project
+.cproject
