@@ -9,6 +9,9 @@ from iocbuilder.modules.andorCCDSDK import AndorCCDSDK
 epics_host_arch = Architecture()
 is_windows = epics_host_arch.find('win') >= 0
 
+class andorCCD_DLSGui(AutoSubstitution):
+    TemplateFile = "andorCCD-DLSGui.template"
+
 @includesTemplates(ADBaseTemplate, NDFileTemplate)
 class andorCCDTemplate(AutoSubstitution):
 #    TemplateFile = "andorCCD.template"
@@ -46,6 +49,8 @@ class andorCCD(AsynPort):
         self.__dict__.update(locals())
         # Make an instance of our template
         makeTemplateInstance(self._SpecificTemplate, locals(), args)
+        dls_gui_args = {"P":args["P"], "R":args["R"]}
+        makeTemplateInstance(andorCCD_DLSGui, locals(), dls_gui_args)
 
     # __init__ arguments
     ArgInfo = ADBaseTemplate.ArgInfo + _SpecificTemplate.ArgInfo + makeArgInfo(__init__,
