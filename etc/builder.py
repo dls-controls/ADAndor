@@ -49,8 +49,8 @@ class andorCCD(AsynPort):
         self.__dict__.update(locals())
         # Make an instance of our template
         makeTemplateInstance(self._SpecificTemplate, locals(), args)
-        dls_gui_args = {"P":args["P"], "R":args["R"]}
-        makeTemplateInstance(andorCCD_DLSGui, locals(), dls_gui_args)
+        locals().update(args)
+        makeTemplateInstance(andorCCD_DLSGui, locals(), {})
 
     # __init__ arguments
     ArgInfo = ADBaseTemplate.ArgInfo + _SpecificTemplate.ArgInfo + makeArgInfo(__init__,
