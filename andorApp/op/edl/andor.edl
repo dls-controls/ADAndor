@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1309
-y 296
+x 1358
+y 122
 w 395
-h 820
+h 845
 font "arial-bold-r-12.0"
 ctlFont "arial-bold-r-12.0"
 btnFont "arial-bold-r-12.0"
@@ -33,7 +33,7 @@ release 0
 x 5
 y 480
 w 380
-h 305
+h 330
 lineColor index 14
 fill
 fillColor index 3
@@ -90,7 +90,7 @@ major 10
 minor 0
 release 0
 x 95
-y 710
+y 735
 w 285
 h 20
 controlPv "$(P)$(R)AndorTempStatus_RBV"
@@ -109,7 +109,7 @@ major 10
 minor 0
 release 0
 x 95
-y 735
+y 760
 w 285
 h 20
 controlPv "$(P)$(R)AndorMessage_RBV"
@@ -128,7 +128,7 @@ major 4
 minor 1
 release 1
 x 10
-y 710
+y 735
 w 145
 h 20
 font "arial-bold-r-12.0"
@@ -147,7 +147,7 @@ major 4
 minor 1
 release 1
 x 10
-y 735
+y 760
 w 145
 h 20
 font "arial-bold-r-12.0"
@@ -229,7 +229,7 @@ major 4
 minor 1
 release 1
 x 10
-y 685
+y 710
 w 95
 h 20
 font "arial-bold-r-12.0"
@@ -248,7 +248,7 @@ major 10
 minor 0
 release 0
 x 115
-y 685
+y 710
 w 75
 h 20
 controlPv "$(P)$(R)Temperature"
@@ -268,7 +268,7 @@ major 4
 minor 6
 release 0
 x 195
-y 685
+y 710
 w 65
 h 20
 controlPv "$(P)$(R)Temperature_RBV"
@@ -292,7 +292,7 @@ major 4
 minor 0
 release 0
 x 265
-y 685
+y 710
 w 115
 h 20
 fgColor index 25
@@ -311,7 +311,7 @@ major 4
 minor 4
 release 0
 x 265
-y 760
+y 785
 w 115
 h 20
 fgColor index 43
@@ -476,7 +476,7 @@ major 4
 minor 3
 release 0
 x 5
-y 790
+y 815
 w 380
 h 25
 fgColor index 14
@@ -687,7 +687,7 @@ major 4
 minor 6
 release 0
 x 275
-y 660
+y 685
 w 65
 h 20
 controlPv "$(P)$(R)AndorEMGain_RBV"
@@ -711,7 +711,7 @@ major 10
 minor 0
 release 0
 x 195
-y 660
+y 685
 w 75
 h 20
 controlPv "$(P)$(R)AndorEMGain"
@@ -731,7 +731,7 @@ major 4
 minor 1
 release 1
 x 10
-y 660
+y 685
 w 135
 h 20
 font "arial-bold-r-12.0"
@@ -741,5 +741,68 @@ useDisplayBg
 value {
   "EM CCD Gain:"
 }
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 660
+w 135
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Frame transfer mode:"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
+release 0
+x 260
+y 660
+w 80
+h 20
+controlPv "$(P)$(R)AndorFTMode_RBV"
+font "arial-bold-r-12.0"
+fontAlign "center"
+fgColor index 16
+fgAlarm
+bgColor index 10
+precision 5
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 165
+y 660
+w 90
+h 20
+fgColor index 25
+fgAlarm
+bgColor index 3
+inconsistentColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)AndorFTMode"
+font "arial-bold-r-12.0"
 endObjectProperties
 
