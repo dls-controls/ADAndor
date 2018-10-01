@@ -1,6 +1,8 @@
+BENSUPPORT= /home/cvl62853/Development/local/support
+
 ASYN=         $(SUPPORT)/asyn/4-31
-ADCORE=       $(SUPPORT)/ADCore/2-6dls5
-ANDORCCDSDK=  $(SUPPORT)/andorCCDSDK/2-102dls1alpha
+ADCORE=       $(SUPPORT)/ADCore/2-6dls6
+ANDORCCDSDK=  $(SUPPORT)/andorCCDSDK/2-102dls3
 ADSupport=    $(SUPPORT)/ADSupport/1-2
 
 EPICS_BASE=/dls_sw/epics/R3.14.12.3/base
