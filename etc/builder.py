@@ -9,6 +9,12 @@ from iocbuilder.modules.andorCCDSDK import AndorCCDSDK
 epics_host_arch = Architecture()
 is_windows = epics_host_arch.find('win') >= 0
 
+# Default location for looking for detector INI files
+sdk_detector_ini_path = ""
+if not is_windows:
+    # Linux requires valid path - use files in andorCCDSDK module used to build ADAndor
+    sdk_detector_ini_path = AndorCCDSDK.LibPath() + "/andorCCDSDKApp/src/sdk/andor/etc"
+
 class andorCCD_DLSGui(AutoSubstitution):
     TemplateFile = "andorCCD-DLSGui.template"
 
@@ -34,7 +40,7 @@ class andorCCD(AsynPort):
     # This tells xmlbuilder to use PORT instead of name as the row ID
     UniqueName = "PORT"
     _SpecificTemplate = andorCCDTemplate
-    def __init__(self, PORT, SHAMROCKID=0, BUFFERS = 50, MEMORY = 0, INSTALLPATH = "", PRIORITY = 0, STACKSIZE = 100000, **args):
+    def __init__(self, PORT, SHAMROCKID=0, BUFFERS = 50, MEMORY = 0, INSTALLPATH = sdk_detector_ini_path, PRIORITY = 0, STACKSIZE = 100000, **args):
         print "*****************************************************"
         print "WARNING - your builder generated andor IOC may not work!"
         print " Currently it is necessary to modify the generated iocs src/makefile to ensure the following link order:"
@@ -60,9 +66,8 @@ class andorCCD(AsynPort):
             'plugin callbacks', int),
         MEMORY = Simple('Max memory to allocate, should be maxw*maxh*nbuffer '
             'for driver and all attached plugins', int),
-        INSTALLPATH = Simple('The path to the Andor directory containing the detector INI files, etc.'
-            'This can be specified as an empty string ("") for new detectors that do not use the INI'
-            'files on Windows, but must be a valid path on Linux (probably /usr/local/etc/andor).', str),
+        INSTALLPATH = Simple("Path containing the detector INI files. Can be empty string on Windows if detector doesn't "
+            "require INI file. For Linux, must be valid path (defaults to using andorCCDSDK used for building this module).", str),
         PRIORITY = Simple('The thread priority for the asyn port driver thread', int),
         STACKSIZE = Simple('The stack size for the asyn port driver thread', int))
 
