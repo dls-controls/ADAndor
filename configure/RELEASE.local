@@ -1,7 +1,5 @@
-WORKSUPPORT= /dls_sw/work/R3.14.12.7/support
-
 ASYN=         $(SUPPORT)/asyn/4-34
-ADCORE=       $(WORKSUPPORT)/ADCore
+ADCORE=       $(SUPPORT)/ADCore/3-3-2dls1
 ANDORCCDSDK=  $(SUPPORT)/andorCCDSDK/2-102dls4
 ADSupport=    $(SUPPORT)/ADSupport/1-4
 
