@@ -56,6 +56,7 @@ class andorCCD(AsynPort):
         # Make an instance of our template
         makeTemplateInstance(self._SpecificTemplate, locals(), args)
         locals().update(args)
+        makeTemplateInstance(andorCCD_DLSGui, locals(), {})
 
     # __init__ arguments
     ArgInfo = ADBaseTemplate.ArgInfo + _SpecificTemplate.ArgInfo + makeArgInfo(__init__,
