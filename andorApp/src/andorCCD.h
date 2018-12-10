@@ -20,7 +20,6 @@
 #define MAX_ENUM_STRING_SIZE 26
 #define MAX_ADC_SPEEDS 16
 #define MAX_PREAMP_GAINS 16
-#define MAX_VS_SPEEDS 16
 #define MAX_VS_AMPLITUDES 16
 #define MAX_FAN_MODES 3
 #define MAX_VS_PERIODS 16
@@ -37,7 +36,6 @@
 #define AndorEmGainModeString              "ANDOR_EM_GAIN_MODE"
 #define AndorEmGainAdvancedString          "ANDOR_EM_GAIN_ADVANCED"
 #define AndorAdcSpeedString                "ANDOR_ADC_SPEED"
-#define AndorVSSpeedString                 "ANDOR_VS_SPEED"
 #define AndorVSAmplitudeString             "ANDOR_VS_AMPLITUDE"
 #define AndorFanModeString                 "ANDOR_FAN_MODE"
 #define AndorFanStatusString               "ANDOR_FAN_STATUS"
@@ -70,12 +68,6 @@ typedef struct {
   char *EnumString;
   int EnumValue;
 } AndorPreAmpGain_t;
-
-typedef struct {
-  float VSSpeed;
-  char *EnumString;
-  int EnumValue;
-} AndorVSSpeed_t;
 
 typedef struct {
   int VSAmplitude;
@@ -133,7 +125,6 @@ class AndorCCD : public ADDriver {
   int AndorEmGainMode;
   int AndorEmGainAdvanced;
   int AndorAdcSpeed;
-  int AndorVSSpeed;
   int AndorVSAmplitude;
   int AndorFanMode;
   int AndorFanStatus;
@@ -152,7 +143,6 @@ class AndorCCD : public ADDriver {
   void saveDataFrame(int frameNumber);
   void setupADCSpeeds();
   void setupPreAmpGains();
-  void setupVSSpeeds();
   void setupVSAmplitudes();
   void setupFanModes();
   void setupVerticalShiftPeriods();
@@ -251,8 +241,6 @@ class AndorCCD : public ADDriver {
   int mTotalPreAmpGains;
   int mNumPreAmpGains;
   AndorPreAmpGain_t mPreAmpGains[MAX_PREAMP_GAINS];
-  int mNumVSSpeeds;
-  AndorVSSpeed_t mVSSpeeds[MAX_VS_SPEEDS];
   int mNumVSAmplitudes;
   AndorVSAmplitude_t mVSAmplitudes[MAX_VS_AMPLITUDES];
   int mNumFanModes;

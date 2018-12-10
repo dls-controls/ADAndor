@@ -297,23 +297,6 @@ record(mbbi, "$(P)$(R)AndorPreAmpGain_RBV")
    field(SCAN, "I/O Intr")
 }
 
-# The VS speed enum values are constructed at run-time based on camera capabilities
-# % autosave 2 VAL
-record(mbbo, "$(P)$(R)AndorVSSpeed")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_SPEED")
-}
-
-#% archiver 10 Monitor
-record(mbbi, "$(P)$(R)AndorVSSpeed_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_SPEED")
-   field(SCAN, "I/O Intr")
-}
-
 # The VS amplitude enum values are constructed at run-time based on camera capabilities
 # % autosave 2 VAL
 record(mbbo, "$(P)$(R)AndorVSAmplitude")
@@ -507,3 +490,7 @@ record(ai, "$(P)$(R)ReadoutTime_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_READOUT_TIME")
     field(SCAN, "I/O Intr")
 }
+
+# Aliases for vertical shift speed (to preserve DLS PV names)
+alias("$(P)$(R)AndorVSPeriod", "$(P)$(R)AndorVSSpeed")
+alias("$(P)$(R)AndorVSPeriod_RBV", "$(P)$(R)AndorVSSpeed_RBV")

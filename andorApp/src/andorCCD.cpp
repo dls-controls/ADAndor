@@ -156,7 +156,6 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   createParam(AndorEmGainModeString,              asynParamInt32, &AndorEmGainMode);
   createParam(AndorEmGainAdvancedString,          asynParamInt32, &AndorEmGainAdvanced);
   createParam(AndorAdcSpeedString,                asynParamInt32, &AndorAdcSpeed);
-  createParam(AndorVSSpeedString,                 asynParamInt32, &AndorVSSpeed);
   createParam(AndorVSAmplitudeString,             asynParamInt32, &AndorVSAmplitude);
   createParam(AndorFanModeString,                 asynParamInt32, &AndorFanMode);
   createParam(AndorFanStatusString,               asynParamOctet, &AndorFanStatus);
@@ -237,14 +236,8 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
     mPreAmpGains[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
   } 
   
-  // Initialize VSSpeed enums
-  for (i=0; i<MAX_VS_SPEEDS; i++) {
-    mVSSpeeds[i].EnumValue = i;
-    mVSSpeeds[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
-  } 
-  
   // Initialize VSAmplitude enums
-  for (i=0; i<MAX_VS_SPEEDS; i++) {
+  for (i=0; i<MAX_VS_AMPLITUDES; i++) {
     mVSAmplitudes[i].EnumValue = i;
     mVSAmplitudes[i].EnumString = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
   }
@@ -296,7 +289,6 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   status |= setIntegerParam(AndorShutterMode, AShutterFullyAuto);
   status |= setDoubleParam(ADShutterOpenDelay, 0.);
   status |= setDoubleParam(ADShutterCloseDelay, 0.);
-  status |= setIntegerParam(AndorVSSpeed, 0);
   status |= setIntegerParam(AndorVSAmplitude, 0);
   status |= setIntegerParam(AndorFanMode, 0);
   status |= setStringParam(AndorFanStatus, "Unknown");
@@ -305,7 +297,6 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
 
   setupADCSpeeds();
   setupPreAmpGains();
-  setupVSSpeeds();
   setupVSAmplitudes();
   setupFanModes();
 
@@ -444,41 +435,14 @@ void AndorCCD::setupPreAmpGains()
                   mNumPreAmpGains, AndorPreAmpGain, 0);
 }
 
-void AndorCCD::setupVSSpeeds()
-{
-  int i;
-  AndorVSSpeed_t *pVSSpeed = mVSSpeeds;
-  float vsSpeed;
-  char *enumStrings[MAX_VS_SPEEDS];
-  int enumValues[MAX_VS_SPEEDS];
-  int enumSeverities[MAX_VS_SPEEDS];
-
-  mNumVSSpeeds = 0;
-  checkStatus(GetNumberVSSpeeds(&mNumVSSpeeds));
-  for (i=0; i<mNumVSSpeeds; i++) {
-      checkStatus(GetVSSpeed(i, &vsSpeed));
-      epicsSnprintf(pVSSpeed->EnumString, MAX_ENUM_STRING_SIZE, "%.2f uS", vsSpeed);
-      pVSSpeed->EnumValue = i;
-      pVSSpeed->VSSpeed = vsSpeed;
-      pVSSpeed++;
-  }
-  for (i=0; i<mNumVSSpeeds; i++) {
-    enumStrings[i] = mVSSpeeds[i].EnumString;
-    enumValues[i] = mVSSpeeds[i].EnumValue;
-    enumSeverities[i] = 0;
-  }
-  doCallbacksEnum(enumStrings, enumValues, enumSeverities, 
-                  mNumVSSpeeds, AndorVSSpeed, 0);
-}
-
 void AndorCCD::setupVSAmplitudes()
 {
   int i;
   AndorVSAmplitude_t *pVSAmplitude = mVSAmplitudes;
   int vsAmplitude;
-  char *enumStrings[MAX_VS_SPEEDS];
-  int enumValues[MAX_VS_SPEEDS];
-  int enumSeverities[MAX_VS_SPEEDS];
+  char *enumStrings[MAX_VS_AMPLITUDES];
+  int enumValues[MAX_VS_AMPLITUDES];
+  int enumSeverities[MAX_VS_AMPLITUDES];
   char vsAmplitudeStr[256];
 
 
@@ -569,14 +533,6 @@ asynStatus AndorCCD::readEnum(asynUser *pasynUser, char *strings[], int values[]
       if (strings[i]) free(strings[i]);
       strings[i] = epicsStrDup(mPreAmpGains[i].EnumString);
       values[i] = mPreAmpGains[i].EnumValue;
-      severities[i] = 0;
-    }
-  }
-  else if (function == AndorVSSpeed) {
-    for (i=0; ((i<mNumVSSpeeds) && (i<(int)nElements)); i++) {
-      if (strings[i]) free(strings[i]);
-      strings[i] = epicsStrDup(mVSSpeeds[i].EnumString);
-      values[i] = mVSSpeeds[i].EnumValue;
       severities[i] = 0;
     }
   }
@@ -725,13 +681,6 @@ void AndorCCD::report(FILE *fp, int details)
         fprintf(fp, "    Index=%d, Gain=%f\n",
                 mPreAmpGains[i].EnumValue, mPreAmpGains[i].Gain);
       }
-      fprintf(fp, "  VS speeds available: %d\n", mNumVSSpeeds);
-      for (i=0; i<mNumVSSpeeds; i++) {
-        fprintf(fp, "    Index=%d, VSSpeed=%f\n",
-                mVSSpeeds[i].EnumValue, mVSSpeeds[i].VSSpeed);
-      }
-      checkStatus(GetFastestRecommendedVSSpeed(&param1, &fParam1));
-      fprintf(fp, "    FastestRecommendedVSSpeed %f\n", fParam1);
       fprintf(fp, "  VS amplitudes available: %d\n", mNumVSAmplitudes);
 #if !(defined(_WIN32) || defined(_WIN64))
       // Diamond does not have the win library supporting this function
@@ -858,17 +807,6 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
           checkStatus(CoolerON());
         }
       } catch (const std::string &e) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-          "%s:%s: %s\n",
-          driverName, functionName, e.c_str());
-        status = asynError;
-      }
-    }
-    else if (function == AndorVSSpeed) {
-      try {
-        checkStatus(SetVSSpeed(value));
-      } catch (const std::string &e) {
-        setIntegerParam(function, oldValue);
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
           "%s:%s: %s\n",
           driverName, functionName, e.c_str());
