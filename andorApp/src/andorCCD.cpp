@@ -150,7 +150,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   createParam(AndorShutterModeString,             asynParamInt32, &AndorShutterMode);
   createParam(AndorShutterExTTLString,            asynParamInt32, &AndorShutterExTTL);
   createParam(AndorPalFileNameString,             asynParamOctet, &AndorPalFileName);
-  createParam(AndorAccumulatePeriodString,      asynParamFloat64, &AndorAccumulatePeriod);
+  createParam(AndorAccumulatePeriodString,        asynParamFloat64, &AndorAccumulatePeriod);
   createParam(AndorPreAmpGainString,              asynParamInt32, &AndorPreAmpGain);
   createParam(AndorEmGainString,                  asynParamInt32, &AndorEmGain);
   createParam(AndorEmGainModeString,              asynParamInt32, &AndorEmGainMode);
@@ -164,6 +164,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
   createParam(AndorReadOutModeString,             asynParamInt32, &AndorReadOutMode);
   createParam(AndorFrameTransferModeString,       asynParamInt32, &AndorFrameTransferMode);
   createParam(AndorVerticalShiftPeriodString,     asynParamInt32, &AndorVerticalShiftPeriod);
+  createParam(AndorReadoutTimeString,             asynParamFloat64, &AndorReadoutTime);
 
   // Create the epicsEvent for signaling to the status task when parameters should have changed.
   // This will cause it to do a poll immediately, rather than wait for the poll time period.
@@ -1321,6 +1322,7 @@ asynStatus AndorCCD::setupAcquisition()
   int preAmpGain;
   int binX, binY, minX, minY, sizeX, sizeY, reverseX, reverseY, maxSizeX, maxSizeY;
   float acquireTimeAct, acquirePeriodAct, accumulatePeriodAct;
+  float readoutTime;
   int FKmode = 4;
   int emGain;
   int emGainMode;
@@ -1591,6 +1593,9 @@ asynStatus AndorCCD::setupAcquisition()
     setDoubleParam(ADAcquirePeriod, acquirePeriodAct);
     setDoubleParam(AndorAccumulatePeriod, accumulatePeriodAct);
 
+    // Readout time
+    checkStatus(GetReadOutTime(&readoutTime));
+    setDoubleParam(AndorReadoutTime, readoutTime);
     
   } catch (const std::string &e) {
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,

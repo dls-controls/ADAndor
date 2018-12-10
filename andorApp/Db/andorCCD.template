@@ -499,3 +499,11 @@ record(mbbi, "$(P)$(R)ColorMode_RBV")
 {
     field(DISA, "1")
 }
+
+# The readout time from the sensor
+record(ai, "$(P)$(R)ReadoutTime_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_READOUT_TIME")
+    field(SCAN, "I/O Intr")
+}

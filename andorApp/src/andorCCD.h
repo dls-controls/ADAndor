@@ -45,6 +45,7 @@
 #define AndorReadOutModeString             "ANDOR_READOUT_MODE"
 #define AndorFrameTransferModeString       "ANDOR_FT_MODE"
 #define AndorVerticalShiftPeriodString     "ANDOR_VS_PERIOD"
+#define AndorReadoutTimeString             "ANDOR_READOUT_TIME"
 
 /**
  * Structure defining an ADC speed for the ADAndor driver.
@@ -140,6 +141,7 @@ class AndorCCD : public ADDriver {
   int AndorReadOutMode;
   int AndorFrameTransferMode;
   int AndorVerticalShiftPeriod;
+  int AndorReadoutTime;
   #define LAST_ANDOR_PARAM AndorVerticalShiftPeriod
 
  private:

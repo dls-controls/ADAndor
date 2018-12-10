@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1358
-y 122
+x 1362
+y 146
 w 395
 h 845
 font "arial-bold-r-12.0"
@@ -804,5 +804,48 @@ topShadowColor index 1
 botShadowColor index 11
 controlPv "$(P)$(R)AndorFTMode"
 font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 785
+w 85
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Readout time:"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
+release 0
+x 95
+y 785
+w 75
+h 20
+controlPv "$(P)$(R)ReadoutTime_RBV"
+font "arial-bold-r-12.0"
+fontAlign "center"
+fgColor index 16
+fgAlarm
+bgColor index 10
+precision 5
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+noExecuteClipMask
 endObjectProperties
 
