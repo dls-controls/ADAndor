@@ -906,16 +906,22 @@ asynStatus AndorCCD::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     int minTemp = 0;
     int maxTemp = 0;
 
+    // Store original value before processing
+    epicsFloat64 oldValue;
+    getDoubleParam(function, &oldValue);
+
     /* Set the parameter and readback in the parameter library.  */
     status = setDoubleParam(function, value);
 
     if (function == ADAcquireTime) {
       mAcquireTime = (float)value;  
       status = setupAcquisition();
+      if (status != asynSuccess) setDoubleParam(function, oldValue);
     }
     else if (function == ADAcquirePeriod) {
       mAcquirePeriod = (float)value;  
       status = setupAcquisition();
+      if (status != asynSuccess) setDoubleParam(function, oldValue);
     }
     else if (function == AndorAccumulatePeriod) {
       mAccumulatePeriod = (float)value;  
