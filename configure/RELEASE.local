@@ -1,5 +1,5 @@
 ASYN=         $(SUPPORT)/asyn/4-34
-ADCORE=       $(SUPPORT)/ADCore/3-3-2dls1
+ADCORE=       $(SUPPORT)/ADCore/3-4dls1
 ANDORCCDSDK=  $(SUPPORT)/andorCCDSDK/2-102dls4
 ADSupport=    $(SUPPORT)/ADSupport/1-4
 
