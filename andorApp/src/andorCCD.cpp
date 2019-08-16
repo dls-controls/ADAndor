@@ -180,6 +180,13 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int shamrockID
     return;
   }
 
+  // Use this to signal the acquisition setup is complete.
+  this->acquireEvent = epicsEventMustCreate(epicsEventEmpty);
+  if (!this->acquireEvent) {
+    printf("%s:%s epicsEventCreate failure for acquire event\n", driverName, functionName);
+    return;
+  }
+
   // Initialize ADC enums
   for (i=0; i<MAX_ADC_SPEEDS; i++) {
     mADCSpeeds[i].EnumValue = i;
@@ -740,7 +747,6 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     //Set in param lib so the user sees a readback straight away. Save a backup in case of errors.
     getIntegerParam(function, &oldValue);
-    status = setIntegerParam(function, value);
 
     if (function == ADAcquire) {
       getIntegerParam(ADStatus, &adstatus);
@@ -867,19 +873,26 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
     //For a successful write, clear the error message.
     setStringParam(AndorMessage, " ");
 
-    /* Do callbacks so higher layers see any changes */
-    callParamCallbacks();
-
     /* Send a signal to the poller task which will make it do a poll, and switch to the fast poll rate */
     epicsEventSignal(statusEvent);
 
     if (mAcquiringData) {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-        "%s:%s:, Sending dataEvent to dataTask ...\n", 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s:%s:, Sending dataEvent to dataTask ...\n",
         driverName, functionName);
-      //Also signal the data readout thread
-      epicsEventSignal(dataEvent);
+        //Also signal the data readout thread
+        epicsEventSignal(dataEvent);
+        // Wait for acquisition setup to complete.
+        this -> unlock();
+        epicsUInt32 eventStatus = epicsEventWait(acquireEvent);
+        this -> lock();
     }
+
+    if (status == asynSuccess)
+        status = setIntegerParam(function, value);
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks();
 
     if (status)
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
@@ -1624,6 +1637,8 @@ void AndorCCD::dataTask(void)
       setIntegerParam(ADNumImagesCounter, 0);
       setIntegerParam(ADNumExposuresCounter, 0);
       callParamCallbacks();
+      // Acquisition setup for camera is complete
+      epicsEventSignal(acquireEvent);
     } else {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s:%s:, Data thread is running but main thread thinks we are not acquiring.\n", 
