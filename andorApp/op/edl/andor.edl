@@ -4,7 +4,7 @@ major 4
 minor 0
 release 1
 x 1362
-y 146
+y 183
 w 395
 h 845
 font "arial-bold-r-12.0"
@@ -293,7 +293,7 @@ minor 0
 release 0
 x 265
 y 710
-w 115
+w 75
 h 20
 fgColor index 25
 bgColor index 3
@@ -842,6 +842,30 @@ fgColor index 16
 fgAlarm
 bgColor index 10
 precision 5
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
+release 0
+x 345
+y 710
+w 35
+h 20
+controlPv "$(P)$(R)TemperatureActual"
+font "arial-bold-r-12.0"
+fontAlign "center"
+fgColor index 16
+fgAlarm
+bgColor index 10
+precision 1
 nullColor index 30
 useHexPrefix
 newPos
