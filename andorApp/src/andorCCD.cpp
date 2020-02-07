@@ -876,7 +876,8 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Send a signal to the poller task which will make it do a poll, and switch to the fast poll rate */
     epicsEventSignal(statusEvent);
 
-    if (mAcquiringData) {
+    // The detector should be acquiring before returning
+    if (function == ADAcquire && mAcquiringData) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "%s:%s:, Sending dataEvent to dataTask ...\n",
         driverName, functionName);
