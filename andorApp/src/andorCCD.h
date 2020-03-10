@@ -4,15 +4,17 @@
  * @author Matthew Pearson
  * @date June 2009
  *
- * Updated Dec 2011 for Asyn 4-17 and areaDetector 1-7 
+ * Updated Dec 2011 for Asyn 4-17 and areaDetector 1-7
  *
  * Major updates to get callbacks working, etc. by Mark Rivers Feb. 2011
+ * Updated by Peter Heesterman to support multi-track operation Oct. 2019
  */
 
 #ifndef ANDORCCD_H
 #define ANDORCCD_H
 
 #include <libxml/parser.h>
+#include <CCDMultiTrack.h>
 
 #include "ADDriver.h"
 #include "SPEHeader.h"
@@ -20,7 +22,6 @@
 #define MAX_ENUM_STRING_SIZE 26
 #define MAX_ADC_SPEEDS 16
 #define MAX_PREAMP_GAINS 16
-#define MAX_VS_AMPLITUDES 16
 #define MAX_FAN_MODES 3
 #define MAX_VS_PERIODS 16
 
@@ -36,7 +37,6 @@
 #define AndorEmGainModeString              "ANDOR_EM_GAIN_MODE"
 #define AndorEmGainAdvancedString          "ANDOR_EM_GAIN_ADVANCED"
 #define AndorAdcSpeedString                "ANDOR_ADC_SPEED"
-#define AndorVSAmplitudeString             "ANDOR_VS_AMPLITUDE"
 #define AndorFanModeString                 "ANDOR_FAN_MODE"
 #define AndorFanStatusString               "ANDOR_FAN_STATUS"
 #define AndorBaselineClampString           "ANDOR_BASELINE_CLAMP"
@@ -44,6 +44,7 @@
 #define AndorFrameTransferModeString       "ANDOR_FT_MODE"
 #define AndorVerticalShiftPeriodString     "ANDOR_VS_PERIOD"
 #define AndorReadoutTimeString             "ANDOR_READOUT_TIME"
+#define AndorVerticalShiftAmplitudeString  "ANDOR_VS_AMPLITUDE"
 
 /**
  * Structure defining an ADC speed for the ADAndor driver.
@@ -70,12 +71,6 @@ typedef struct {
 } AndorPreAmpGain_t;
 
 typedef struct {
-  int VSAmplitude;
-  char *EnumString;
-  int EnumValue;
-} AndorVSAmplitude_t;
-
-typedef struct {
   int FanModeNum;
   char *EnumString;
 } AndorFanMode_t;
@@ -96,15 +91,16 @@ typedef struct {
  */
 class AndorCCD : public ADDriver {
  public:
-  AndorCCD(const char *portName, const char *installPath, int shamrockID, 
+  AndorCCD(const char *portName, const char *installPath, int cameraSerial, int shamrockID,
            int maxBuffers, size_t maxMemory, int priority, int stackSize);
   virtual ~AndorCCD();
 
   /* These are the methods that we override from ADDriver */
   virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
   virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
+  virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
   virtual void report(FILE *fp, int details);
-  virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], 
+  virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[],
                               size_t nElements, size_t *nIn);
 
   // Should be private, but are called from C so must be public
@@ -113,7 +109,7 @@ class AndorCCD : public ADDriver {
 
  protected:
   int AndorCoolerParam;
-  #define FIRST_ANDOR_PARAM AndorCoolerParam
+#define FIRST_ANDOR_PARAM AndorCoolerParam
   int AndorTempStatusMessage;
   int AndorMessage;
   int AndorShutterMode;
@@ -125,7 +121,6 @@ class AndorCCD : public ADDriver {
   int AndorEmGainMode;
   int AndorEmGainAdvanced;
   int AndorAdcSpeed;
-  int AndorVSAmplitude;
   int AndorFanMode;
   int AndorFanStatus;
   int AndorBaselineClamp;
@@ -133,7 +128,8 @@ class AndorCCD : public ADDriver {
   int AndorFrameTransferMode;
   int AndorVerticalShiftPeriod;
   int AndorReadoutTime;
-  #define LAST_ANDOR_PARAM AndorVerticalShiftPeriod
+  int AndorVerticalShiftAmplitude;
+  #define LAST_ANDOR_PARAM AndorVerticalShiftAmplitude
 
  private:
 
@@ -142,8 +138,8 @@ class AndorCCD : public ADDriver {
   asynStatus setupShutter(int command);
   void saveDataFrame(int frameNumber);
   void setupADCSpeeds();
+  void setupTrackDefn(int minX, int sizeX, int binX);
   void setupPreAmpGains();
-  void setupVSAmplitudes();
   void setupFanModes();
   void setupVerticalShiftPeriods();
 
@@ -151,7 +147,7 @@ class AndorCCD : public ADDriver {
   /**
    * Additional image mode to those in ADImageMode_t
    */
-   static const epicsInt32 AImageFastKinetics;
+  static const epicsInt32 AImageFastKinetics;
 
   /**
    * List of acquisiton modes.
@@ -224,14 +220,12 @@ class AndorCCD : public ADDriver {
 
   epicsEventId statusEvent;
   epicsEventId dataEvent;
-  epicsEventId acquireEvent;
   double mPollingPeriod;
   double mFastPollingPeriod;
   unsigned int mAcquiringData;
-  unsigned int mClearADAquire;
   char *mInstallPath;
   bool mExiting;
-
+  int mExited;
   /**
    * ADC speed parameters
    */
@@ -242,8 +236,6 @@ class AndorCCD : public ADDriver {
   int mTotalPreAmpGains;
   int mNumPreAmpGains;
   AndorPreAmpGain_t mPreAmpGains[MAX_PREAMP_GAINS];
-  int mNumVSAmplitudes;
-  AndorVSAmplitude_t mVSAmplitudes[MAX_VS_AMPLITUDES];
   int mNumFanModes;
   AndorFanMode_t mFanModes[MAX_FAN_MODES];
 
@@ -260,17 +252,19 @@ class AndorCCD : public ADDriver {
   float mAccumulatePeriod;
   int mMinShutterOpenTime;
   int mMinShutterCloseTime;
-  
+
   // Shamrock spectrometer ID
   int mShamrockId;
 
   // AndorCapabilities structure
   AndorCapabilities mCapabilities;
 
+  CCDMultiTrack mMultiTrack;
+
   // EM Gain parameters 
   int mEmGainRangeLow;
   int mEmGainRangeHigh;
-  
+
   // SPE file header
   tagCSMAHEAD *mSPEHeader;
   xmlDocPtr mSPEDoc;
@@ -279,7 +273,4 @@ class AndorCCD : public ADDriver {
   bool mInitOK;
 };
 
-#define NUM_ANDOR_DET_PARAMS ((int)(&LAST_ANDOR_PARAM - &FIRST_ANDOR_PARAM + 1))
-
 #endif //ANDORCCD_H
-
