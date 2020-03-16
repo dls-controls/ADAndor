@@ -1579,9 +1579,12 @@ asynStatus AndorCCD::setupAcquisition()
     setDoubleParam(AndorAccumulatePeriod, accumulatePeriodAct);
 
     // Readout time
-    checkStatus(GetReadOutTime(&readoutTime));
-    setDoubleParam(AndorReadoutTime, readoutTime);
-    
+    try{
+      checkStatus(GetReadOutTime(&readoutTime));
+      setDoubleParam(AndorReadoutTime, readoutTime);
+    } catch (const std::string &e) {
+          asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s:%s: %s\n", driverName, functionName, e.c_str());
+    }
   } catch (const std::string &e) {
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
       "%s:%s: %s\n",
