@@ -511,6 +511,16 @@ record(mbbi, "$(P)$(R)AndorVSAmplitude_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_AMPLITUDE")
    field(SCAN, "I/O Intr")
 }
+
+#Record to distinguish different camera screens
+record(scalcout, "$(P)$(R)CAMMODEL_RBV")
+{
+     field(INPA, "$(P)$(R)Model_RBV")
+     field(INPB, "D0934P_BN")
+     field(calc, "A == B")
+     field(SCAN, "I/O Intr")
+}
+
 #Records in ADBase that do not apply to Andor
 
 record(mbbo, "$(P)$(R)ColorMode")
