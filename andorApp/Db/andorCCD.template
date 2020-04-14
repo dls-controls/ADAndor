@@ -515,10 +515,9 @@ record(mbbi, "$(P)$(R)AndorVSAmplitude_RBV")
 #Record to distinguish different camera screens
 record(scalcout, "$(P)$(R)CAMMODEL_RBV")
 {
-     field(INPA, "$(P)$(R)Model_RBV")
-     field(INPB, "D0934P_BN")
-     field(calc, "A == B")
-     field(SCAN, "I/O Intr")
+     field(INAA, "$(P)$(R)Model_RBV")
+     field(CALC, "AA=='D0934P_BN'")
+     field(SCAN, "1 second")
 }
 
 #Records in ADBase that do not apply to Andor
