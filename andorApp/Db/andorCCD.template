@@ -513,7 +513,7 @@ record(mbbi, "$(P)$(R)AndorVSAmplitude_RBV")
 }
 
 #Record to distinguish different camera screens
-record(scalcout, "$(P)$(R)CAMMODEL_RBV")
+record(scalcout, "$(P)$(R)IS_IKONM")
 {
      field(INAA, "$(P)$(R)Model_RBV")
      field(CALC, "AA=='D0934P_BN'")

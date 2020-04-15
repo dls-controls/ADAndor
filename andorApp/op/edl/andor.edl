@@ -85,7 +85,7 @@ bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
 displaySource "menu"
-filePv "$(P)$(R)CAMMODEL_RBV"
+filePv "$(P)$(R)IS_IKONM"
 sizeOfs 5
 numDsps 2
 displayFileName {
